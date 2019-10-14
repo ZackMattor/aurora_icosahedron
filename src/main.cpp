@@ -11,7 +11,7 @@
 Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, NEO_GRBW + NEO_KHZ800);
 
 /** ICOSAHEDRON MAPPINGS **/
-static const char icosahedron_neighbors[20][3] = {
+static const uint8_t icosahedron_neighbors[20][3] = {
   { 15,  2, 5 },    // 1
   { 7, 3, 1 },      // 2
   { 2, 9, 4 },      // 3
@@ -34,7 +34,7 @@ static const char icosahedron_neighbors[20][3] = {
   { 16,  14,  19 }  // 20
 };
 
-static const char map_icosahedron_hardware[20] = {
+static const uint8_t map_icosahedron_hardware[] = {
   1,  // 1
   5,  // 2
   6,  // 3
@@ -57,8 +57,23 @@ static const char map_icosahedron_hardware[20] = {
   11  // 20
 };
 
+
+enum Direction { left, right, back };
+
+static const Direction steps[] = { right, right, right, right, right };
+
 // State variables
 uint16_t step = 0;
+uint8_t current = 1;
+uint8_t prev = 5;
+
+uint8_t next_surface_id(uint8_t previous_id, uint8_t current_id, Direction dir) {
+
+}
+
+uint8_t surface_id_to_led_id(uint8_t surface_id) {
+  return map_icosahedron_hardware[surface_id - 1]-1;
+}
 
 void setup() {
   strip.begin();
@@ -67,7 +82,9 @@ void setup() {
 
 void loop() {
   strip.clear();
-  strip.setPixelColor(map_icosahedron_hardware[step % PIXEL_COUNT]-1, strip.Color(0, 0, 0, 10));
+
+
+  strip.setPixelColor(, strip.Color(0, 0, 0, 10));
 
   strip.show();
 
