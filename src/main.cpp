@@ -60,15 +60,44 @@ static const uint8_t map_icosahedron_hardware[] = {
 
 enum Direction { left, right, back };
 
-static const Direction steps[] = { right, right, right, right, right };
+uint8_t step_count = 19;
+static const Direction steps[] = { right, right, right, right,
+                                   left, /*13*/right, right, left, right, left, right,
+                                   left, right/*11*/, left, left, right, left, left, left };
 
 // State variables
-uint16_t step = 0;
-uint8_t current = 1;
-uint8_t prev = 5;
+uint16_t step;
+uint8_t current;
+uint8_t prev;
+
+void reset() {
+  step = 0;
+  current = 1;
+  prev = 5;
+}
 
 uint8_t next_surface_id(uint8_t previous_id, uint8_t current_id, Direction dir) {
-  return 4;
+  uint8_t answer = 0;
+  uint8_t neighbor_index = current_id-1;
+  int8_t neighbor_adder = dir == left ? 1:2;
+
+  Serial.println("----------");
+  Serial.println(previous_id);
+  Serial.println(neighbor_index);
+  Serial.println(dir);
+
+  for(uint8_t i=0; i<3; i++) {
+    Serial.println(icosahedron_neighbors[neighbor_index][i]);
+
+    if(icosahedron_neighbors[neighbor_index][i] == previous_id) {
+      answer = icosahedron_neighbors[neighbor_index][(i+neighbor_adder) % 3];
+    }
+  }
+
+  Serial.print("Answer - ");
+  Serial.println(answer); Serial.println("+++++++++");
+
+  return answer;
 }
 
 uint8_t surface_id_to_led_id(uint8_t surface_id) {
@@ -76,19 +105,35 @@ uint8_t surface_id_to_led_id(uint8_t surface_id) {
 }
 
 void setup() {
+  Serial.begin(9600);
+  Serial.print("Welcome!");
   strip.begin();
   strip.show();
+  reset();
 }
 
 void loop() {
   strip.clear();
 
-  uint8_t next = next_surface_id(prev, current, steps[step % 5]);
+  Serial.println(current);
 
-  strip.setPixelColor(surface_id_to_led_id(next), strip.Color(0, 50, 0, 0));
+  strip.fill(strip.Color(0, 0, 250, 0), 0, PIXEL_COUNT);
+  strip.setPixelColor(surface_id_to_led_id(current), strip.Color(0, 250, 0, 0));
+
+  uint8_t next = next_surface_id(prev, current, steps[step % step_count]);
+
+  if(next == 0) {
+    Serial.println("ERROR COULD NOT FIND NEXT");
+    delay(10000);
+  }
+
+  prev = current;
+  current = next;
 
   strip.show();
 
-  delay(1000);
+  delay(10);
   step++;
+
+  if(step == step_count+1) reset();
 }
