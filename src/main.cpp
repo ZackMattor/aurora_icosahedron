@@ -6,6 +6,7 @@
 
 #define PIXEL_PIN    6  // Digital IO pin connected to the NeoPixels.
 #define PIXEL_COUNT 20  // Number of NeoPixels
+#define NUM_ENTITIES 6
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, NEO_GRBW + NEO_KHZ800);
@@ -65,15 +66,29 @@ static const Direction steps[] = { right, right, right, right,
                                    left, /*13*/right, right, left, right, left, right,
                                    left, right/*11*/, left, left, right, left, left, left };
 
+uint32_t colors[] = {
+  strip.Color(0, 200, 0, 0),
+  strip.Color(0, 0, 200, 0),
+  strip.Color(200, 0, 0, 0),
+  strip.Color(200, 0, 200, 0),
+  strip.Color(200, 200, 0, 0),
+  strip.Color(0, 200, 200, 0)
+};
+
 // State variables
-uint16_t step;
-uint8_t current;
-uint8_t prev;
+struct Entity {
+  uint32_t step;
+  uint8_t current;
+  uint8_t prev;
+  uint32_t color;
+};
+
+Entity entities[NUM_ENTITIES];
 
 void reset() {
-  step = 0;
-  current = 1;
-  prev = 5;
+  for(int i=0; i<NUM_ENTITIES; i++) {
+    entities[i] = ( Entity ) {0, 1, 5, colors[i]};
+  }
 }
 
 uint8_t next_surface_id(uint8_t previous_id, uint8_t current_id, Direction dir) {
@@ -81,21 +96,11 @@ uint8_t next_surface_id(uint8_t previous_id, uint8_t current_id, Direction dir) 
   uint8_t neighbor_index = current_id-1;
   int8_t neighbor_adder = dir == left ? 1:2;
 
-  Serial.println("----------");
-  Serial.println(previous_id);
-  Serial.println(neighbor_index);
-  Serial.println(dir);
-
   for(uint8_t i=0; i<3; i++) {
-    Serial.println(icosahedron_neighbors[neighbor_index][i]);
-
     if(icosahedron_neighbors[neighbor_index][i] == previous_id) {
       answer = icosahedron_neighbors[neighbor_index][(i+neighbor_adder) % 3];
     }
   }
-
-  Serial.print("Answer - ");
-  Serial.println(answer); Serial.println("+++++++++");
 
   return answer;
 }
@@ -105,8 +110,9 @@ uint8_t surface_id_to_led_id(uint8_t surface_id) {
 }
 
 void setup() {
-  Serial.begin(9600);
-  Serial.print("Welcome!");
+  randomSeed(analogRead(0));
+  //Serial.begin(9600);
+  //Serial.print("Welcome!");
   strip.begin();
   strip.show();
   reset();
@@ -115,25 +121,30 @@ void setup() {
 void loop() {
   strip.clear();
 
-  Serial.println(current);
+  strip.fill(strip.Color(0, 0, 250, 10), 0, PIXEL_COUNT);
 
-  strip.fill(strip.Color(0, 0, 250, 0), 0, PIXEL_COUNT);
-  strip.setPixelColor(surface_id_to_led_id(current), strip.Color(0, 250, 0, 0));
+  // Full walk
+  //uint8_t next = next_surface_id(prev, current, steps[step % step_count]);
+  //
+  uint8_t next;
 
-  uint8_t next = next_surface_id(prev, current, steps[step % step_count]);
+  for(int i=0; i<NUM_ENTITIES; i++) {
+    entities[i];
+    next = next_surface_id(entities[i].prev, entities[i].current, random(0, 2));
+    strip.setPixelColor(surface_id_to_led_id(entities[i].current), entities[i].color);
+    entities[i].prev = entities[i].current;
+    entities[i].current = next;
+    entities[i].step++;
+  }
 
   if(next == 0) {
-    Serial.println("ERROR COULD NOT FIND NEXT");
     delay(10000);
   }
 
-  prev = current;
-  current = next;
-
   strip.show();
 
-  delay(10);
-  step++;
+  delay(100);
 
-  if(step == step_count+1) reset();
+  // Full walk
+  //if(step == step_count+1) reset();
 }
