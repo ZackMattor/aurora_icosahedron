@@ -1,5 +1,13 @@
 # documentation
 
+## Definitions
+
+[**Convex regular icosahedron**](https://en.wikipedia.org/wiki/Icosahedron) - A geometric term for a polyhedron with 20 similar sides. Each surface is a perfect equalateral triangle. A common accurance of an Regular Icosahedron is a 20 sided die. A non-regular Icosahedron can take many shaped - but for all purposes in this document Icosahedron is refering to a Convex regular icosahedron.
+
+**Aurora** - Pet project of Zack Mattor - basically a framework for playing with colored lighting and lighting controllers.
+
+**Aurora Icosahedron** - A lamp that is an Icosahedron with each surface being an individually addressable RGB LED.
+
 ## The Projection
 I realized if i wanted to do animations across the Icosahedron Light I would need some kind of map to find my way around the object. I derived the following projection as my map. It took some iterations and imagination but I really like conceptualizing the shape in this manner. I found some other projections online but I didn't think they fit my requirements to navigate around the shape.
 
