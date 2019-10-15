@@ -2,7 +2,7 @@
 
 ## Definitions
 
-[**Convex regular icosahedron**](https://en.wikipedia.org/wiki/Icosahedron) - A geometric term for a polyhedron with 20 similar sides. Each surface is a perfect equalateral triangle. A common accurance of an Regular Icosahedron is a 20 sided die. A non-regular Icosahedron can take many shaped - but for all purposes in this document Icosahedron is refering to a Convex regular icosahedron.
+[**Convex regular icosahedron**](https://en.wikipedia.org/wiki/Icosahedron) - A geometric term for a polyhedron with 20 similar sides. Each surface is a perfect equalateral triangle. A common accurance of an Regular Icosahedron is a 20 sided die. A non-regular Icosahedron can take many shapes - but for all purposes in this document Icosahedron is refering to a Convex regular icosahedron.
 
 **Aurora** - Pet project of Zack Mattor - basically a framework for playing with colored lighting and lighting controllers.
 
