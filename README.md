@@ -4,6 +4,15 @@ The Aurora Icosahedron is an LED light which is part of the Aurora lighting proj
 
 See the [Documentation](/docs/) for some more nerdy details.
 
+
+**This is part of the Aurora Lighting System**
+
+[Aurora Firmware](https://github.com/ZackMattor/aurora-firmware)
+
+[Aurora Home Hub](https://github.com/ZackMattor/aurora-home-hub)
+
+[Aurora App](https://github.com/ZackMattor/aurora-app-v2)
+
 ## Bill of Materials (BOM)
  - Strip of 20 neopixel lights
  - Some sort of DIY Icosahedron structure (Hopefully will write up instructions someday)
